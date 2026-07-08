@@ -1,0 +1,11 @@
+{
+  "/api": { "target": "http://localhost:8080", "secure": false },
+  "/search": { "target": "http://localhost:8080", "secure": false },
+  "/favorites": { "target": "http://localhost:8080", "secure": false },
+  "/balance": { "target": "http://localhost:8080", "secure": false },
+  "/stockPurchases": { "target": "http://localhost:8080", "secure": false },
+  "/buyStock": { "target": "http://localhost:8080", "secure": false },
+  "/sellStock": { "target": "http://localhost:8080", "secure": false },
+  "/updateCurrentPrice": { "target": "http://localhost:8080", "secure": false },
+  "/updateFavorite": { "target": "http://localhost:8080", "secure": false }
+}

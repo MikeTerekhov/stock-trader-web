@@ -1,0 +1,53 @@
+<!-- watchlist.component.html -->
+<div class="container mt-3">
+  <h2 class="mb-4" style="padding-left: 17%; padding-top: 4%; font-size: 30px;">My Watchlist</h2>
+
+  <!-- Show loading spinner while isLoading is true -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Content container for either favorites list or 'no favorites' message -->
+  <ng-container *ngIf="!isLoading">
+    <div *ngIf="favorites.length > 0; else noFavorites" class="row">
+      <!-- Loop through each favorite and display it -->
+      <div class="col-12 mb-3" *ngFor="let fav of favorites" style="padding-left: 17%; padding-right: 17%">
+        <div class="card rounded" (click)="navigateToFavorite(fav.ticker)" style="cursor: pointer;">
+          <!-- Button to remove a favorite -->
+          <button type="button" class="btn-close" aria-label="Close" (click)="removeFavorite(fav.ticker); $event.stopPropagation();" style="padding: 2%; font-size: 8px;"></button>
+          <!-- Container for favorite details -->
+          <div class="d-flex justify-content-between align-items-center" style="padding: 0%;">
+            <!-- Display ticker and company name -->
+            <div style="padding-left: 2%;">
+              <div style="font-size: x-large; padding-bottom: 3%;">{{ fav.ticker }}</div>
+              <h5 class="card-title" style="font-size: small; padding-bottom: 3%;">{{ fav.corpName }}</h5>
+            </div>
+            <!-- Display favorite stock price details -->
+            <div class="text-center" style="flex-grow: 1;">
+              <p class="card-text" [ngClass]="{'text-danger': fav.change < 0, 'text-success': fav.change >= 0}" style="font-size: x-large; padding-bottom: 2%;">
+                {{ fav.highPrice | currency }}
+              </p>
+              <p [ngClass]="{'text-danger': fav.change < 0, 'text-success': fav.change >= 0}" style="display: inline-block;">
+                <span *ngIf="fav.change >= 0" style="color: green;">▲</span><span *ngIf="fav.change < 0" style="color: red;">▼</span>
+                {{ fav.change | number:'1.2-2' }} ({{ fav.percentChange | percent:'1.2-2' }})
+              </p>
+            </div>
+            <!-- Placeholder for layout -->
+            <div style="width: 8px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template for when there are no favorites -->
+    <ng-template #noFavorites>
+      <div style="padding-left: 17%; padding-right: 17%; padding-top: 5%;">
+        <div class="alert alert-warning rounded" role="alert" style="text-align: center;">
+          Currently you don't have any stock in your watchlist.
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+  

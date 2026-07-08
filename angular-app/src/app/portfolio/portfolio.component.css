@@ -1,0 +1,28 @@
+.success_alert {
+    width: 100%;
+    margin: 0 auto; 
+    margin-top: 1%;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
+  }
+
+  .text-label {
+    display: inline-block;
+    min-width: 70%; /* Adjust as needed */
+    font-size: large;
+  }
+  
+  .text-value {
+    display: inline-block;
+    font-size: large;
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%; /* Adjust based on your needs */
+  }
+  
+  

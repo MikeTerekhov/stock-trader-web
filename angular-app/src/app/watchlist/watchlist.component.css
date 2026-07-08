@@ -1,0 +1,38 @@
+/* Add this in your watchlist.component.css */
+.remove-fav {
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  
+  .remove-fav:hover {
+    color: #dc3545; /* Bootstrap's $danger color for a hover effect */
+  }
+  
+  .card-header {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  
+  .card-text {
+    font-size: 1rem;
+    margin-bottom: 0; /* If you want to remove the margin from the bottom of the <p> */
+  }
+  
+  .text-success {
+    color: #28a745; /* Bootstrap's $success color */
+  }
+  
+  .text-danger {
+    color: #dc3545; /* Bootstrap's $danger color */
+  }
+  
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%; /* Adjust based on your needs */
+  }

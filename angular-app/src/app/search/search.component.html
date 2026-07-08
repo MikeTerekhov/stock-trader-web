@@ -1,0 +1,392 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/volume-by-price.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+
+
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<app-home-search [searchQuery]="searchQuery"></app-home-search>
+
+
+<div style="padding-left: 10% !important; padding-right: 10% !important; padding-top: 1% !important;">
+
+  <div *ngIf="favoriteSuccess">
+    <div #purchaseSuccessAlert id="purchaseSuccessAlert" class="alert alert-success alert-dismissible fade show success_alert" role="alert">
+        {{ticker}} added to Watchlist.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div *ngIf="favoriteSuccessRem">
+    <div #purchaseSuccessAlert id="purchaseSuccessAlert" class="alert alert-danger alert-dismissible fade show success_alert" role="alert">
+        {{ticker}} removed from Watchlist.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div *ngIf="purchaseSuccess">
+    <div #purchaseSuccessAlert id="purchaseSuccessAlert" class="alert alert-success alert-dismissible fade show success_alert" role="alert">
+        {{ticker}} bought successfully
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <div *ngIf="sellSuccess">
+    <div #sellSuccessAlert class="alert alert-success alert-dismissible fade show success_alert" role="alert">
+        {{ticker}} sold successfully
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div *ngIf="error2">
+    <div #purchaseSuccessAlert id="purchaseSuccessAlert" class="alert alert-danger alert-dismissible fade show success_alert"style="text-align: center !important;" role="alert">
+        No data found. Please enter a valid ticker
+        <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="redirectToHomeSearch()" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div *ngIf="error1">
+    <div #purchaseSuccessAlert id="purchaseSuccessAlert" class="alert alert-danger alert-dismissible fade show success_alert" style="text-align: center !important;" role="alert">
+        Please enter a valid ticker
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div *ngIf="(isLoading || isLoading2 || isLoading3 || isLoading5 || isLoading6 || isLoading7 || isLoading8) && !error1 && !error2" class="spinner-container">
+    <mat-spinner [diameter]="80"></mat-spinner>
+  </div>
+  
+</div>
+
+<div *ngIf="!error1 && !error2 && !isLoading && !isLoading2 && !isLoading3 && !isLoading5 && !isLoading6 && !isLoading7 && !isLoading8">
+<div class="container mt-3">
+    <div class="card mb-3 custom-card">
+      <div class="row no-gutters align-items-center">
+        <div class="col-4">
+          <!-- Stock symbol and name -->
+          <div class="card-body custom-card-body">
+            <h5 class="card-title" style="font-size: 2.0rem; font-weight: 400;">
+                {{ ticker }}
+                <button class="btn p-0" style="font-size: 1rem;" (click)="onStarClick()">
+                  <i [ngClass]="isFavorite(stockTicker!) ? 'bi-star-fill favorite-star' : 'bi-star'" class="bi"></i>
+                </button>                
+            </h5>              
+            <p class="card-text" style="font-size: 1.3rem; color: gray;">{{ name }}</p>
+            <p class="card-text"><small class="text-muted">{{ exchange }}</small></p>
+            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#buyStockModal" (click)="update_price()">Buy</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#sellStockModal" *ngIf="isStockPurchased(stockTicker!) " style="margin-left: 10px;" (click)="update_price()">Sell</button>
+          </div>
+        </div>
+        <div class="col-4 text-center">
+          <!-- Stock logo -->
+          <img *ngIf="logoUrl" [src]="logoUrl" alt="Stock Logo" class="card-img custom-img" style="height: 100px; width: 100px;">
+        </div>
+        <div class="col-4">
+          <div class="card-body custom-card-body">
+            <!-- Stock price and percentage -->
+            <h3 class="card-title" [ngClass]="{'text-success': percentChange! > 0, 'text-danger': percentChange! < 0}">{{price | currency}}</h3>
+            <h3 [ngClass]="{'text-success': percentChange! > 0, 'text-danger': percentChange! < 0}">
+            <span *ngIf="percentChange! > 0">&#9650;</span><span *ngIf="percentChange! < 0">&#9660;</span>
+              {{change | number:'1.2-2'}} ({{percentChange | number:'1.2-2'}}%)
+            </h3>
+            <p class="card-text"><small class="text-muted">{{time_stamp_comp}}</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div *ngIf="marketOpen; else marketClosed" [ngClass]="'text-success-bottom'">
+    Market is Open
+</div>
+
+<ng-template #marketClosed>
+    <div [ngClass]="'text-danger-bottom'">
+        Market Closed on {{marketCloseTime}}
+    </div>
+</ng-template>
+
+<div class="container sticky-nav-tabs" style="padding-top: 5%;">
+    <div class="row">
+      <div style="padding-left: 5%; padding-right: 5%;"> <!-- Adjusts the width and centers the tabs -->
+        <ul class="nav nav-tabs nav-fill custom-nav-tabs " style="border-bottom: none;">
+          <li class="nav-item">
+            <a class="nav-link active" id="summary-tab" data-bs-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true">Summary</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="news-tab" data-bs-toggle="tab" href="#top-news" role="tab" aria-controls="news" aria-selected="false">Top News</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="charts-tab" data-bs-toggle="tab" href="#charts" role="tab" aria-controls="charts" aria-selected="false">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="insights-tab" data-bs-toggle="tab" href="#insights" role="tab" aria-controls="insights" aria-selected="false">Insights</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="tab-content" style="padding-bottom: 5%;"  style="text-align: center;">
+    <div class="tab-pane show active" id="summary" role="tabpanel" aria-labelledby="summary-tab" style="align-items: center !important;">
+      <!-- Summary content here -->
+
+      <div class="container my-4">
+        <!-- Row for the entire content -->
+        <div class="row" style="align-items: center !important;">
+          <!-- Column for the company info -->
+          <div class="col-md-6" style="padding-left: 10%; padding-top: 1%;">
+            <!-- Content for company info here -->
+            <h5><span class="prices">High Price: </span>{{ highPrice | number:'1.2-2' }}</h5>
+            <h5><span class="prices">Low Price: </span>{{ lowPrice | number:'1.2-2' }}</h5>
+            <h5><span class="prices">Open Price: </span>{{ openPrice | number:'1.2-2' }}</h5>
+            <h5><span class="prices">Prev. Close: </span>{{ prevClose | number:'1.2-2' }}</h5>
+
+            <div class="company-info" style="text-align: center;">
+                <!-- More company info -->
+                <p class="comp">About the company</p>
+            <div>
+                <h5><span class="prices">IPO Start Date: </span>{{ipo}}</h5> <span></span>
+                <h5><span class="prices">Industry: </span>{{industry}}</h5>
+                <h5>
+                    <span class="prices">Webpage: </span>
+                    <a href="{{ webpage }}" target="_blank" class="webpage-link">{{ webpage }}</a>
+                </h5>
+                <h5><span class="prices">Company Peers:</span></h5>
+                <div>
+                  <ng-container *ngFor="let peer of companyPeers; let last = last">
+                    <a href="#" (click)="navigateToPeer(peer);$event.preventDefault()">{{ peer }}</a>
+                    <span *ngIf="!last">, </span>
+                  </ng-container>
+                </div>
+                </div>
+            </div>
+                <!-- More content -->
+          </div>
+      
+          <!-- Column for the chart -->
+          <div class="col-md-6">
+            <div>
+              <ng-container *ngIf="chartOptions1">
+                <highcharts-chart
+                  [Highcharts]="Highcharts"
+                  [options]="chartOptions1"
+                  style="width: 100%; height: 400px; display: block;">
+                </highcharts-chart>
+              </ng-container>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane show fade" id="top-news" role="tabpanel" aria-labelledby="news-tab" style="padding-left: 5%; padding-right: 5%; padding-top: 5px;">
+      <!-- Top news content here -->
+      <div class="card mb-3 news-card" style="border: none;">
+        <div class="row g-3 news-row" style="padding: 2% 5%;">
+          <div class="col col-md-6" *ngFor="let item of newsItems">
+            <!-- Specify fixed height and width for the card -->
+            <div class="card" style="height: 100px; width: 100%; background-color: #F9F9F9; margin: auto; cursor: pointer;" (click)="openModal(item)">
+              <!-- Flex container for vertical centering with fixed image size -->
+              <div class="d-flex align-items-center" style="overflow: hidden;">
+                <!-- Ensure the image fits without distorting aspect ratio -->
+                <img [src]="item.img" class="me-3 rounded" style="height: 70px; width: 150px; object-fit: cover; margin-left: 2%; margin-top: 2%;">
+                <div class="card-body" style="text-align: center;">
+                  <h5 class="card-title" style="overflow: hidden; text-overflow: ellipsis;">{{ item.headline }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      
+      
+    </div>
+
+    <div class="tab-pane fade" id="charts" role="tabpanel" aria-labelledby="charts-tab" style="padding-left: 5%; padding-right: 5%; padding-top: 5px;">
+      <!-- Charts content here -->
+            <div>
+              <ng-container *ngIf="chartOptions2">
+                <highcharts-chart
+                  [Highcharts]="Highcharts"
+                  [options]="chartOptions2"
+                  style="width: 100%; height: 600px; display: block;">
+                </highcharts-chart>
+              </ng-container>
+            </div>
+    </div>
+    <div class="tab-pane fade" id="insights" role="tabpanel" aria-labelledby="insights-tab">
+      <!-- Insights content here -->
+
+      <div class="container mt-3" style="align-items: center;">
+        <!-- Row for the table -->
+        <div style="padding-top: 2%; padding-bottom: 2%; font-size: 25px; text-align: center;">Insider Sentiments</div>
+        <div class="row">
+          <div class="col-12 text-center" style="padding-left: 15%; padding-right: 15%;">
+            <table class="table no-shadow">
+                <tr>
+                  <th style="border-top: none !important;" scope="col">{{name}}</th>
+                  <th style="border-top: none !important;" scope="col">MSPR</th>
+                  <th style="border-top: none !important;" scope="col">Change</th>
+                </tr>
+              <tbody>
+                <tr>
+                  <th scope="row">Total</th>
+                    <td>{{ totalMSPR | number:'1.2-2' }}</td>
+                    <td>{{ totalChange | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Positive</th>
+                    <td>{{ totalPositiveMSPR | number:'1.2-2' }}</td>
+                    <td>{{ totalPositiveChange | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Negative</th>
+                    <td>{{ totalNegativeMSPR | number:'1.2-2' }}</td>
+                    <td>{{ totalNegativeChange | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Row for the plots -->
+        <div class="row">
+          <div class="col-lg-6 col-md-12">
+            <!-- Recommendation Trends Plot -->
+            <div class="card" style="border: none !important;">
+              <div class="card-body">
+                <!-- Include your plot here. Example: <img src="path_to_recommendation_trends_plot.png" alt="Recommendation Trends"> -->
+                      <div>
+                        <ng-container *ngIf="chartOptions3">
+                          <highcharts-chart
+                            [Highcharts]="Highcharts"
+                            [options]="chartOptions3"
+                            style="width: 100%; height: 400px; display: block;">
+                          </highcharts-chart>
+                        </ng-container>              
+                      </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-12">
+            <!-- Historical EPS Surprises Plot -->
+            <div class="card" style="border: none !important;">
+              <div class="card-body">
+   
+                    <ng-container *ngIf="chartOptions4">
+                      <highcharts-chart
+                        [Highcharts]="Highcharts"
+                        [options]="chartOptions4"
+                        style="width: 100%; height: 400px; display: block;">
+                      </highcharts-chart>
+                    </ng-container>              
+ 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div> <!-- div for loader -->
+
+<!-- Place this modal outside of the *ngFor loop -->
+<!-- Modal placed outside of the *ngFor loop -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" #exampleModal>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+        <div style="flex-direction: column; align-items: start;">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-size: 25px; font-weight: 600;">{{ selectedItem.source }}</h5>
+            <h6 style="font-size: 15px; color: grey; font-weight: 500;">{{ selectedItem.publishedDate | date: 'longDate' }}</h6>
+        </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        </div>
+
+        <div class="modal-body">
+          <h3 style="padding: 0px; margin: 0px; font-weight: 600;">{{ selectedItem.headline }}</h3>
+          <h5 style="padding: 0px; margin: 0px;">{{ selectedItem.summary }}</h5>
+          <!-- Presuming you have a 'url' field in your item -->
+          <span style="color: gray;"> For more details click <a href="{{ selectedItem.url }}" target="_blank">here</a></span>
+        </div>
+            <div onclick="shareOnTwitter()" class="align-items-left justify-content-start p-2" style="border: 1px solid #dee2e6; border-radius: 0.25rem; height: 120px;">
+                <div style="padding: 2%;"> Share </div>
+                <!-- Replace with your icon here -->
+                <button (click)="shareOnTwitter()" style="border: none !important; height: 45px !important; width: 45px !important; background-color: white !important;">
+                    <img class="rounded" src="https://img.freepik.com/free-vector/twitter-new-2023-x-logo-white-background-vector_1017-45422.jpg" style="height: 50px; width: 50px; border: none;">
+                </button>
+                <button (click)="shareOnFacebook()" style="border: none !important; height: 45px !important; width: 45px !important; background-color: white !important; padding-left: 3%;">
+                    <img src="https://i.stack.imgur.com/4Zwtb.png" style="height: 50px; width: 50px; border: none;">
+                </button>
+        </div>
+        <div style="height: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal -->
+<div #buyStockModal class="modal fade" id="buyStockModal" tabindex="-1" aria-labelledby="buyStockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="buyStockModalLabel" style="font-size: x-large;">{{ stockTicker }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Current Price: ${{ price | number:'1.2-2' }}</p>
+        <p>Money in Wallet: ${{ currentBalance | number:'1.2-2' }}</p>
+        <div class="d-flex align-items-center mb-3">
+          <label for="stockQuantity" class="col-form-label me-2">Quantity:</label>
+          <input type="number" class="form-control" style="width: auto;" id="stockQuantity" [(ngModel)]="selectedQuantity" (ngModelChange)="calculateTotal()">
+        </div>
+        <p *ngIf="!isEnoughBalance()" class="text-danger" style="font-size: small; float: left !important;">Not enough money in wallet!</p>
+      </div>           
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <p style="float: left !important;">Total: ${{ totalCost | number:'1.2-2' }}</p>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-success" [disabled]="!isEnoughBalance()" (click)="buyStock()">Buy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #sellStockModal class="modal fade" id="sellStockModal" tabindex="-1" aria-labelledby="sellStockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="buyStockModalLabel" style="font-size: x-large;">{{ stockTicker }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Current Price: ${{ price | number:'1.2-2' }}</p>
+        <p>Money in Wallet: ${{ currentBalance | number:'1.2-2' }}</p>
+        <div class="d-flex align-items-center mb-3">
+          <label for="stockQuantity" class="col-form-label me-2">Quantity:</label>
+          <input type="number" class="form-control" style="width: auto;" id="stockQuantity" [(ngModel)]="selectedQuantity" (ngModelChange)="calculateTotal()">
+        </div>
+        <p *ngIf="!isEnoughStock()" class="text-danger" style="font-size: small; float: left !important;">You cannot sell the stocks you do not have!</p>
+      </div>           
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <p style="float: left !important;">Total: ${{ totalCost | number:'1.2-2' }}</p>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-success" [disabled]="!isEnoughStock()" (click)="sellStock()">Sell</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

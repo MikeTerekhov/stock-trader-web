@@ -1,0 +1,58 @@
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Stock Search</a>
+      <!-- Toggle button for small screens -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Left-aligned links (empty in this case) -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        </ul>
+        <!-- Right-aligned links -->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link"
+            routerLink="/search"
+            [ngClass]="{'custom-active-link': isActiveSearchRoute}"
+            aria-current="page"
+            (click)="navigateToSearch()"
+            type="submit" style="color: whitesmoke !important; font-size: medium; padding-left: 2%;">Search
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+               routerLink="/watchlist" 
+               routerLinkActive="active custom-active-link" 
+               aria-current="page" 
+               href="#" style="color: whitesmoke !important; font-size: medium; padding-left: 2%;">Watchlist
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+               routerLink="/portfolio" 
+               routerLinkActive="active custom-active-link" 
+               aria-current="page" 
+               href="#" style="color: whitesmoke !important; font-size: medium; padding-left: 2%;">Portfolio
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <router-outlet></router-outlet>
+  
+  <footer class="mt-auto bg-info text-center text-lg-start">
+    <div class="text-center p-3" style="background-color: lightgrey; font-weight: 600;">
+      Powered by 
+      <a class="link-text" href="https://finnhub.io/" target="_blank" style="text-decoration: underline; font-weight: 600;">Finnhub.io</a>
+    </div>
+  </footer>
+  </body>
+  

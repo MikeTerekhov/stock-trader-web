@@ -1,0 +1,202 @@
+.text-success {
+  color: #28a745; /* Bootstrap green */
+  text-align: center;
+  font-weight: 800;
+  font-size: 25px;
+}
+
+.text-danger {
+  color: #dc3545; /* Bootstrap red */
+  text-align: center;
+  font-weight: 800;
+  font-size: 25px;
+}
+
+.text-success-bottom {
+  color: #28a745; /* Bootstrap green */
+  text-align: center;
+  font-weight: 800;
+}
+
+.text-danger-bottom {
+  color: #dc3545; /* Bootstrap red */
+  text-align: center;
+  font-weight: 800;
+}
+
+.custom-card {
+  border: none; /* Removes the outline */
+}
+
+.custom-card-body {
+  text-align: center; /* Center aligns the content */
+}
+
+/* Enhances the alignment and presentation */
+.custom-img {
+  max-width: 100px;
+  margin: 0 auto; /* Centers the image within its container */
+}
+
+/* Optional: Adds padding for better spacing inside the card */
+.custom-card .card-body {
+  padding: 20px;
+}
+
+/* Optional: Add this if you want a bottom border only under the active tab */
+.nav-tabs .nav-link.active {
+  border-bottom: 3px solid #007bff !important; /* Bootstrap primary color for the active tab */
+}
+
+.nav-tabs .nav-link {
+  border: none !important;
+  border-bottom: none !important;
+}
+
+
+.prices {
+  font-weight: bold;
+}
+
+.comp {
+  padding-top: 2%;
+  padding-bottom: 6%;
+  font-size: 22px;
+  text-decoration: underline;
+}
+
+.webpage-link {
+  text-decoration: underline;
+}
+
+.company-info {
+  padding-left: 6%;
+  padding-top: 5%;
+}
+
+.modal-footer-box {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-star {
+  color: gold;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2%; 
+}
+
+.error {
+  width: 80% !important;
+  margin: 0 !important; 
+  padding: 10% !important;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  text-align: center; 
+}
+
+@media (max-width: 767px) {
+  .card.mb-3 {
+    margin: 0;
+    border: none;
+  }
+  
+  .card-height {
+    height: 50vh; 
+  }
+
+  .container-height {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+}
+
+
+.scrolling-wrapper {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.nav-pills .nav-link {
+  margin-right: 5px; 
+  border-radius: .25rem; 
+}
+
+.nav-pills .nav-link.active {
+  position: relative;
+}
+
+.nav-pills .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; 
+  left: 0;
+  width: 100%;
+  height: 3px; 
+  background-color: currentColor; 
+}
+
+.nav-pills::before, .nav-pills::after {
+  content: '❮'; 
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px; 
+  color: #000; 
+}
+
+.nav-pills::after {
+  content: '❯'; 
+  right: 0;
+}
+
+
+.nav-pills::before {
+  left: 0;
+}
+
+@media (min-width: 768px) {
+  .scrolling-wrapper::before, .scrolling-wrapper::after {
+    display: none;
+  }
+}
+
+.sticky-nav-tabs {
+  position: sticky;
+  top: 56px; 
+  z-index: 1020; 
+  background: #fff; 
+}
+
+.navbar {
+  z-index: 1030; 
+}
+
+@media (max-width: 768px) { 
+  .no-gutters .col-md-4 {
+    flex: 0 0 33.333333%; 
+    max-width: 33.333333%;
+  }
+}
+
+@media (max-width: 767px) {
+  .custom-card-body h5, 
+  .custom-card-body p, 
+  .custom-card-body h3 {
+    font-size: smaller; 
+  }
+}
+

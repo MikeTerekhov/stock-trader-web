@@ -1,0 +1,122 @@
+<div class="balance-display" style="padding-left: 11%; padding-right: 11%; padding-top: 3%;">
+  <h2 style="font-size: xx-large;">My Portfolio</h2>
+
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner [diameter]="80"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+        <p style="font-size: large;">Money in Wallet: ${{ balance | number: '1.2-2' }}</p>
+
+        <div *ngIf="purchaseSuccess">
+          <div id="purchaseSuccessAlert" class="alert alert-success alert-dismissible fade show success_alert" role="alert">
+              {{ticker}} bought successfully
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <div *ngIf="sellSuccess">
+          <div class="alert alert-success alert-dismissible fade show success_alert" role="alert">
+              {{ticker}} sold successfully
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+
+
+        <div class="container mt-3">
+          <div *ngFor="let stock of stocksPurchased" class="card mb-3">
+            <div class="card-header d-flex align-items-baseline">
+              <div style="padding-right: 1%; font-size: xx-large;">{{ stock.ticker }}</div>
+              <div style="font-size: medium; color: gray;">{{ stock.corpName }}</div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="card-text"><span class="text-label">Quantity:</span><span class="text-value">{{ stock.shares }}</span></p>
+                  <p class="card-text"><span class="text-label">Avg. Cost / Share:</span><span class="text-value">{{ stock.totalCost/stock.shares | number: '1.2-2' }}</span></p>
+                  <p class="card-text"><span class="text-label">Total Cost:</span><span class="text-value">{{ stock.totalCost | number: '1.2-2' }}</span></p>
+                </div>
+                <div class="col-md-6">
+                  <p class="card-text">
+                    <span class="text-label">Change:</span>
+                    <span class="text-value">{{ (stock.currentPrice - stock.purchasePrice) | abs | number:'1.2-2' }}</span>
+                  </p>
+                  <p class="card-text"><span class="text-label">Current Price:</span><span class="text-value">{{ stock.currentPrice | number: '1.2-2' }}</span></p>
+                  <p class="card-text"><span class="text-label">Market Value:</span><span class="text-value">{{ (stock.shares * stock.currentPrice) | number: '1.2-2' }}</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#buyStockModal" style="background-color: blue; color: white; margin-right: 10px;" (click)="selectStock(stock)">Buy</button>
+              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#sellStockModal" (click)="selectStock(stock)">Sell</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="stocksPurchased.length === 0 && !isLoading">
+          <div style="padding-top: 0.5%;">
+            <div class="alert alert-warning rounded" role="alert" style="text-align: center;">
+                Currently you don't have any stock.
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+       <!-- loader -->
+
+
+
+
+
+
+<!-- Modal -->
+<div #buyStockModal class="modal fade" id="buyStockModal" tabindex="-1" aria-labelledby="buyStockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="buyStockModalLabel" style="font-size: x-large;">{{ ticker }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Current Price: ${{ selectedStock?.currentPrice | number:'1.2-2' }}</p>
+        <p>Money in Wallet: ${{ balance | number:'1.2-2' }}</p>
+        <div class="d-flex align-items-center mb-3">
+          <label for="stockQuantity" class="col-form-label me-2">Quantity:</label>
+          <input type="number" class="form-control" style="width: auto;" id="stockQuantity" [(ngModel)]="selectedQuantity" (ngModelChange)="calculateTotal()">
+        </div>
+        <p *ngIf="!isEnoughBalance(selectedStock?.currentPrice! * selectedQuantity)" class="text-danger" style="font-size: small; float: left !important;">Not enough money in wallet!</p>
+      </div>           
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <p style="float: left !important;">Total: ${{ selectedStock?.currentPrice! * selectedQuantity | number:'1.2-2' }}</p>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-success" [disabled]="!isEnoughBalance(selectedStock?.currentPrice! * selectedQuantity)" (click)="buyStock(selectedQuantity, selectedStock!)">Buy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #sellStockModal class="modal fade" id="sellStockModal" tabindex="-1" aria-labelledby="sellStockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="buyStockModalLabel" style="font-size: x-large;">{{ ticker }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Current Price: ${{ selectedStock?.currentPrice | number:'1.2-2' }}</p>
+        <p>Money in Wallet: ${{ balance | number:'1.2-2' }}</p>
+        <div class="d-flex align-items-center mb-3">
+          <label for="stockQuantity" class="col-form-label me-2">Quantity:</label>
+          <input type="number" class="form-control" style="width: auto;" id="stockQuantity" [(ngModel)]="selectedQuantity" (ngModelChange)="calculateTotal()">
+        </div>
+        <p *ngIf="!isEnoughStock(selectedStock?.ticker!, selectedQuantity)" class="text-danger" style="font-size: small; float: left !important;">You cannot sell the stocks you do not have!</p>
+      </div>           
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <p style="float: left !important;">Total: ${{ selectedStock?.currentPrice! * selectedQuantity  | number:'1.2-2' }}</p>
+        <button *ngIf="selectedStock" class="btn btn-success" [disabled]="!isEnoughStock(selectedStock.ticker, selectedQuantity)" data-bs-toggle="modal" data-bs-target="#sellStockModal" (click)="sellStock(selectedQuantity, selectedStock)">Sell</button>
+      </div>
+    </div>
+  </div>
+</div>
+

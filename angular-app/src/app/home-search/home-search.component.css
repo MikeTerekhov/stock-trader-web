@@ -1,0 +1,90 @@
+.d-flex {
+  padding-top: 3%;
+  width: 100%;
+  padding-left: 18%;
+  padding-right: 18%;
+  box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+
+.stock-search {
+  text-align: center;
+  padding-top: 3%;
+  font-size: 30px;
+  font-weight: 400;
+  width: 100%; /* Match the width of the container */
+  box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+  
+  /* Styles for Angular Material Components inside your component's CSS */
+  :host ::ng-deep .mat-form-field {
+    background: white;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+  }
+  
+  :host ::ng-deep .mat-form-field-flex {
+    background: white; /* Adjust the internal form field background */
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+  }
+  
+  :host ::ng-deep .mat-input-element {
+    width: 100%;
+    height: 50px;
+    padding: 20px;
+    border: 3px solid #1D279D; 
+    border-radius: 50px !important;
+  }
+  
+  :host ::ng-deep .input-group {
+    position: relative;
+  }
+  
+  ::ng-deep .my-class {
+    background-color: white !important;  
+    width: 80% !important;
+  }
+  
+  ::ng-deep .options {
+    color: black !important; 
+  }
+
+  ::ng-deep .cdk-overlay-pane {
+    /* Do you changes here */
+      padding-left: 2%;
+}
+
+.input-group {
+  position: relative; 
+}
+
+.search-btn,
+.clear-btn {
+  position: absolute;
+  right: 0; /* Adjust this value as needed to place the button inside the input */
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: grey;
+  font-size: 25px;
+  /* Add any additional styles for button */
+}
+
+.search-btn {
+  right: 12%;
+}
+
+.clear-btn {
+  right: 5%;
+}
+
+.mat-input-element {
+  padding-right: 40px; /* Adjust this value to ensure there is enough space for the button */
+}
+
+
+
+  

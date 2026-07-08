@@ -2,7 +2,7 @@
 
 A full-stack stock portfolio tracker: search tickers, view charts/news/analyst recommendations, maintain a watchlist, and simulate buying/selling shares against a virtual cash balance.
 
-[link text] https://stock-portfolio-tphd.onrender.com
+https://stock-portfolio-tphd.onrender.com
 
 - **Frontend**: Angular 17 (`angular-app/`) — search, portfolio, and watchlist views.
 - **Backend**: Express (`index.js`) — proxies market data from [Polygon.io](https://polygon.io) and [Finnhub](https://finnhub.io), and persists balance/holdings/favorites in MongoDB Atlas.

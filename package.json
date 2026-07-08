@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm install --prefix angular-app && npm run build --prefix angular-app",
+        "build": "npm install && npm install --prefix angular-app && npm run build --prefix angular-app",
         "start": "node index.js"
     },
     "type": "module",

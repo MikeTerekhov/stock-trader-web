@@ -58,7 +58,7 @@ app.get('/api/charts2/:q/:from/:to', async (req, res) => {
 
 
 app.get('/search/:q', async (req, res) => {
-    const query = req.params.q;
+    const query = req.params.q.toUpperCase();
     const finnhubApiKey = process.env.FINNHUB_API_KEY;
 
     const profileUrl = `https://finnhub.io/api/v1/stock/profile2?symbol=${encodeURIComponent(query)}&token=${finnhubApiKey}`;
